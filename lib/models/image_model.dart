@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ImageModel {
   final String id;
@@ -8,6 +9,22 @@ class ImageModel {
   final String imageUrl;
 
   ImageModel({required this.id, required this.imageUrl, required this.tittle});
+
+  factory ImageModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return ImageModel(
+      id: doc.id,
+      imageUrl: data['imageUrl'] ?? '',
+      tittle: data['tittle'] ?? 'No tittle',
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'imageUrl': imageUrl,
+      'tittle': tittle,
+    };
+  }
 
   factory ImageModel.fromJson(Map<String, dynamic> json) {
     String tittle = json['description'] ?? 'No tittle';
